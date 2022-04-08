@@ -2,7 +2,7 @@
 
 use InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController;
 
-Route::get('generator_builder',)->name('io_generator_builder');
+Route::get('generator_builder', [GeneratorBuilderController::class, 'builder'])->name('io_generator_builder');
 
 Route::get('field_template', [GeneratorBuilderController::class, 'fieldTemplate'])->name('io_field_template');
 
