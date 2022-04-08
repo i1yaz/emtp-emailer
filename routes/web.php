@@ -19,7 +19,13 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::group(['middleware' => ['auth']], function () {
+
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
-Route::resource('smtpSettings', App\Http\Controllers\SmtpSettingController::class);
+    Route::resource('smtpSettings', App\Http\Controllers\SmtpSettingController::class);
+
+
+    Route::resource('emails', App\Http\Controllers\EmailController::class);
+});
