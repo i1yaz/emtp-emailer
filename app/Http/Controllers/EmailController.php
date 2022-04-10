@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\EmailSent;
 use App\Http\Requests\CreateEmailRequest;
 use App\Http\Requests\UpdateEmailRequest;
 use App\Repositories\EmailRepository;
 use App\Http\Controllers\AppBaseController;
+use App\Mail\SendMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\Mail;
 use Response;
 
 class EmailController extends AppBaseController
@@ -43,8 +46,12 @@ class EmailController extends AppBaseController
      */
     public function create()
     {
+        $data = [];
         $users = User::get();
-        return view('emails.create', compact('users'));
+        foreach ($users as  $user) {
+            $data[$user->id] = $user->email;
+        }
+        return view('emails.create', compact('data'));
     }
 
     /**
@@ -56,9 +63,8 @@ class EmailController extends AppBaseController
      */
     public function store(CreateEmailRequest $request)
     {
-        $input = $request->all();
 
-        $email = $this->emailRepository->create($input);
+        EmailSent::dispatch($request);
 
         Flash::success('Email saved successfully.');
 
