@@ -1,12 +1,12 @@
 <?php
 
+use App\Models\SmtpSetting;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSmtpSettingsTable extends Migration
+class ActiveSmtp extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -14,15 +14,9 @@ class CreateSmtpSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('smtp_settings', function (Blueprint $table) {
+        Schema::create('active_smtp', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('host');
-            $table->integer('port');
-            $table->string('username');
-            $table->string('password');
-            $table->string('encryption');
-            $table->string('from_address');
-            $table->string('from_name');
+            $table->foreignIdFor(SmtpSetting::class)->default(1);
             $table->timestamps();
         });
     }
@@ -34,6 +28,6 @@ class CreateSmtpSettingsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('smtp_settings');
+        Schema::dropIfExists('active_smtp');
     }
 }

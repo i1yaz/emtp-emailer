@@ -33,3 +33,9 @@
     {!! Form::label('from_address', 'From Address:') !!}
     {!! Form::text('from_address', null, ['class' => 'form-control']) !!}
 </div>
+
+<!-- from_name Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('from_name', 'Name:') !!}
+    {!! Form::text('from_name', null, ['class' => 'form-control']) !!}
+</div>

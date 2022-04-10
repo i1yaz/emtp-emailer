@@ -1,9 +1,3 @@
-<!-- Id Field -->
-<div class="col-sm-12">
-    {!! Form::label('id', 'Id:') !!}
-    <p>{{ $smtpSetting->id }}</p>
-</div>
-
 <!-- Host Field -->
 <div class="col-sm-12">
     {!! Form::label('host', 'Host:') !!}
@@ -39,16 +33,10 @@
     {!! Form::label('from_address', 'From Address:') !!}
     <p>{{ $smtpSetting->from_address }}</p>
 </div>
-
-<!-- Created At Field -->
+<!-- From Address Field -->
 <div class="col-sm-12">
-    {!! Form::label('created_at', 'Created At:') !!}
-    <p>{{ $smtpSetting->created_at }}</p>
+    {!! Form::label('from_name', 'From Name:') !!}
+    <p>{{ $smtpSetting->from_name }}</p>
 </div>
 
-<!-- Updated At Field -->
-<div class="col-sm-12">
-    {!! Form::label('updated_at', 'Updated At:') !!}
-    <p>{{ $smtpSetting->updated_at }}</p>
-</div>
 

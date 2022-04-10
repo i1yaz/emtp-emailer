@@ -8,6 +8,8 @@
         <th>Password</th>
         <th>Encryption</th>
         <th>From Address</th>
+        <th>From Name</th>
+        <th>Active</th>
             <th colspan="3">Action</th>
         </tr>
         </thead>
@@ -20,6 +22,14 @@
             <td>{{ $smtpSetting->password }}</td>
             <td>{{ $smtpSetting->encryption }}</td>
             <td>{{ $smtpSetting->from_address }}</td>
+            <td>{{ $smtpSetting->from_name }}</td>
+            <td>
+                @if ($smtpSetting->activeSmtp)
+                    <span class="badge badge-success">Active</span>
+                @else
+                    <span class="badge badge-danger">Deactive</span>
+                @endif
+            </td>
                 <td width="120">
                     {!! Form::open(['route' => ['smtpSettings.destroy', $smtpSetting->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>

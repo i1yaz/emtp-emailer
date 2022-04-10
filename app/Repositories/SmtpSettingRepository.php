@@ -9,7 +9,7 @@ use App\Repositories\BaseRepository;
  * Class SmtpSettingRepository
  * @package App\Repositories
  * @version April 8, 2022, 12:32 pm UTC
-*/
+ */
 
 class SmtpSettingRepository extends BaseRepository
 {
@@ -22,7 +22,8 @@ class SmtpSettingRepository extends BaseRepository
         'username',
         'password',
         'encryption',
-        'from_address'
+        'from_address',
+        'from_name'
     ];
 
     /**

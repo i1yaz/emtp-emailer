@@ -25,6 +25,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     Route::resource('smtpSettings', App\Http\Controllers\SmtpSettingController::class);
+    Route::get('activate-smtp/{id}', [App\Http\Controllers\SmtpSettingController::class, 'activate'])->name('smtpSettings.activate');
 
 
     Route::resource('emails', App\Http\Controllers\EmailController::class);

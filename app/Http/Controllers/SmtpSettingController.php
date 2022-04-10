@@ -9,6 +9,8 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
+use App\Models\ActiveSmtp;
+use App\Models\SmtpSetting;
 
 class SmtpSettingController extends AppBaseController
 {
@@ -29,10 +31,11 @@ class SmtpSettingController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $smtpSettings = $this->smtpSettingRepository->paginate(10);
-
+        // $smtpSettings = $this->smtpSettingRepository->paginate(10);
+        // $smtpSettings = SmtpSetting::with('activeSmtp')->paginate(10);
+        $smtpSettings = SmtpSetting::withCount('activeSmtp as activeSmtp_count')->orderBy('activeSmtp_count', 'desc')->paginate(10);
         return view('smtp_settings.index')
-            ->with('smtpSettings', $smtpSettings);
+            ->with(['smtpSettings' => $smtpSettings]);
     }
 
     /**
@@ -152,5 +155,13 @@ class SmtpSettingController extends AppBaseController
         Flash::success('Smtp Setting deleted successfully.');
 
         return redirect(route('smtpSettings.index'));
+    }
+    public function activate($id)
+    {
+        ActiveSmtp::updateOrCreate(
+            ['id' => 1],
+            ['smtp_setting_id' => $id]
+        );
+        return redirect()->route('smtpSettings.index');
     }
 }

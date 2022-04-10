@@ -24,6 +24,9 @@
                     @include('smtp_settings.show_fields')
                 </div>
             </div>
+            <div class="card-footer">
+                <a href="{{ route('smtpSettings.activate',['id'=>$smtpSetting->id]) }}" class="btn btn-warning">Activate</a>
+            </div>
         </div>
     </div>
 @endsection

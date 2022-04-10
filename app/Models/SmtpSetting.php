@@ -33,7 +33,8 @@ class SmtpSetting extends Model
         'username',
         'password',
         'encryption',
-        'from_address'
+        'from_address',
+        'from_name'
     ];
 
     /**
@@ -48,7 +49,8 @@ class SmtpSetting extends Model
         'username' => 'string',
         'password' => 'string',
         'encryption' => 'string',
-        'from_address' => 'string'
+        'from_address' => 'string',
+        'from_name' => 'string'
     ];
 
     /**
@@ -62,6 +64,12 @@ class SmtpSetting extends Model
         'username' => ['required'],
         'password' => ['required'],
         'encryption' => ['required'],
-        'from_address' => ['required']
+        'from_address' => ['required'],
+        'from_name' => ['required']
     ];
+
+    public function activeSmtp()
+    {
+        return $this->hasOne(ActiveSmtp::class);
+    }
 }
