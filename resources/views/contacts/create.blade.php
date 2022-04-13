@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-12">
-                    <h1>Compose e-mail</h1>
+                    <h1>Create Contact</h1>
                 </div>
             </div>
         </div>
@@ -17,19 +17,19 @@
 
         <div class="card">
 
-            {!! Form::open(['route' => 'emails.store']) !!}
+            {!! Form::open(['route' => 'contacts.store']) !!}
 
             <div class="card-body">
 
                 <div class="row">
-                    @include('emails.fields')
+                    @include('contacts.fields')
                 </div>
 
             </div>
 
             <div class="card-footer">
                 {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('emails.index') }}" class="btn btn-default">Cancel</a>
+                <a href="{{ route('contacts.index') }}" class="btn btn-default">Cancel</a>
             </div>
 
             {!! Form::close() !!}

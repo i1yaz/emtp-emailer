@@ -30,3 +30,6 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('emails', App\Http\Controllers\EmailController::class);
 });
+
+
+Route::resource('contacts', App\Http\Controllers\ContactController::class);
