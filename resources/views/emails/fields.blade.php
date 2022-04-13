@@ -6,7 +6,7 @@
 <!-- To Field -->
 <div class="form-group col-sm-12">
     {!! Form::label('to', 'To:') !!}
-    {!! Form::select('to', $data, null,['class' => 'form-control s2-multiple-select','multiple'=>'multiple','name'=>'to[]']) !!}
+    {!! Form::select('to', $contact, null,['class' => 'form-control s2-multiple-select','multiple'=>'multiple','name'=>'to[]']) !!}
 </div>
 {{-- <livewire:fetch-user-email/> --}}
 <!-- Subject Field -->
@@ -24,7 +24,7 @@
 <!-- Attachment Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('attachment', 'Attachment:') !!}
-    {!! Form::text('attachment', null, ['class' => 'form-control']) !!}
+    {!! Form::file('attachments[]',['multiple'=>true,'class'=>'']); !!}
 </div>
 @push('third_party_scripts')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

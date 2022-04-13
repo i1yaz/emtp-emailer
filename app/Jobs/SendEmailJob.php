@@ -7,6 +7,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\Middleware\RateLimited;
+use Illuminate\Support\Facades\Mail;
 
 class SendEmailJob implements ShouldQueue
 {
@@ -32,10 +34,14 @@ class SendEmailJob implements ShouldQueue
     {
         $data = $this->data;
         $body = $data['body'];
-        $user = $data['user'];
+        $contact = $data['contact'];
         $subject = $data['subject'];
-        Mail::send('mail.email', ['body' => $body], function ($m) use ($user, $subject) {
-            $m->to($user->email)->subject($subject);
+        $attachments = $data['attachments'];
+        Mail::send('mail.email', ['body' => $body], function ($m) use ($contact, $subject, $attachments) {
+            $m->to($contact->email)->subject($subject);
+            foreach ($attachments as $attachment) {
+                $m->attach($attachment);
+            }
         });
     }
     public function middleware()

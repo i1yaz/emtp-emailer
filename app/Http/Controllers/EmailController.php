@@ -7,10 +7,13 @@ use App\Http\Requests\UpdateEmailRequest;
 use App\Repositories\EmailRepository;
 use App\Http\Controllers\AppBaseController;
 use App\Jobs\SendEmailJob;
-use App\Models\User;
+use App\Models\Contact;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
+use Illuminate\Support\Str;
 
 class EmailController extends AppBaseController
 {
@@ -31,29 +34,28 @@ class EmailController extends AppBaseController
      */
     public function index(Request $request)
     {
-        // $emails = $this->emailRepository->paginate(10);
         $failedJobs = \DB::table('failed_jobs')->select('*')->paginate(10);
         return view('emails.index')
             ->with('failedJobs', $failedJobs);
     }
 
-    public function getFailedJob()
-    {
-        #Fetch all the failed jobs
-        $jobs = \DB::table('failed_jobs')->select('*')->get(10);
-        $data = [];
-        #Loop through all the failed jobs and format them for json printing
-        foreach ($jobs as $job) {
-            $jsonpayload = json_decode($job->payload);
-            $payloadCommand = unserialize($jsonpayload->data->command);
-            $user = $payloadCommand->data['user'];
-            $exception  = explode("\n", $job->exception);
-            $data['jsonpayload'] = $jsonpayload;
-            $data['user'] = $user;
-            $data['exception'] = $exception;
-        }
-        return $data;
-    }
+    // public function getFailedJob()
+    // {
+    //     #Fetch all the failed jobs
+    //     $jobs = \DB::table('failed_jobs')->select('*')->get(10);
+    //     $data = [];
+    //     #Loop through all the failed jobs and format them for json printing
+    //     foreach ($jobs as $job) {
+    //         $jsonpayload = json_decode($job->payload);
+    //         $payloadCommand = unserialize($jsonpayload->data->command);
+    //         $user = $payloadCommand->data['user'];
+    //         $exception  = explode("\n", $job->exception);
+    //         $data['jsonpayload'] = $jsonpayload;
+    //         $data['user'] = $user;
+    //         $data['exception'] = $exception;
+    //     }
+    //     return $data;
+    // }
 
     /**
      * Show the form for creating a new Email.
@@ -62,12 +64,12 @@ class EmailController extends AppBaseController
      */
     public function create()
     {
-        $data = [];
-        $users = User::get();
-        foreach ($users as  $user) {
-            $data[$user->id] = $user->email;
+        $contact = [];
+        $contacts = Contact::get();
+        foreach ($contacts as  $value) {
+            $contact[$value->id] = $value->email;
         }
-        return view('emails.create', compact('data'));
+        return view('emails.create', compact('contact'));
     }
 
     /**
@@ -80,18 +82,23 @@ class EmailController extends AppBaseController
     public function store(CreateEmailRequest $request)
     {
         $data = [];
-        $users = User::find($request->to);
+        $contacts = Contact::find($request->to);
         $subject = $request->subject;
-        $body = $this->fileUpload($request->body);
-        foreach ($users as  $user) {
+        $body = bodyImageUpload($request->body);
+        $attachments = attachmentUpload($request);
+        foreach ($contacts as  $contact) {
             $vars = array(
-                "{{name}}" => $user->name,
-                "{{email}}" => $user->email,
+                "{{{first_name}}}" => $contact->first_name,
+                "{{{last_name}}}" => $contact->last_name,
+                "{{{recipient_name}}}" => $contact->recipient_name,
+                "{{{email}}}" => $contact->email,
+                "{{{phone}}}" => $contact->phone,
             );
             $body = strtr($body, $vars);
             $data['body'] =  $body;
-            $data['user'] =  $user;
+            $data['contact'] =  $contact;
             $data['subject'] =  $subject;
+            $data['attachments'] =  $attachments;
             dispatch(new SendEmailJob($data));
         }
 
@@ -100,32 +107,62 @@ class EmailController extends AppBaseController
 
         return redirect(route('emails.index'));
     }
-    public function fileUpload($content)
-    {
-        try {
-            $dom = new \DomDocument();
-            $dom->loadHtml($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-            $imageFile = $dom->getElementsByTagName('imageFile');
+    // public function attachmentUpload($request)
+    // {
+    //     $files = [];
+    //     if ($request->has('attachments')) {
+    //         //Year in YYYY format.
+    //         $year = date("Y");
 
-            foreach ($imageFile as $item => $image) {
-                $data = $image->getAttribute('src');
-                list($type, $data) = explode(';', $data);
-                list(, $data)      = explode(',', $data);
-                $imgeData = base64_decode($data);
-                $image_name = "/upload/" . time() . $item . '.png';
-                $path = public_path() . $image_name;
-                file_put_contents($path, $imgeData);
+    //         //Month in mm format, with leading zeros.
+    //         $month = date("m");
 
-                $image->removeAttribute('src');
-                $image->setAttribute('src', $image_name);
-            }
+    //         //Day in dd format, with leading zeros.
+    //         $day = date("d");
+    //         //The folder path for our file should be YYYY/MM/DD
+    //         $directory = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR) . $year . DIRECTORY_SEPARATOR . $month . DIRECTORY_SEPARATOR . $day . DIRECTORY_SEPARATOR;
+    //         //If the directory doesn't already exists.
+    //         if (!is_dir($directory)) {
+    //             //Create our directory.
+    //             mkdir($directory, 755, true);
+    //         }
 
-            return $dom->saveHTML();
-        } catch (\Throwable $th) {
-            return $content;
-        }
-        return $content;
-    }
+    //         foreach ($request->file('attachments') as $attachment) {
+    //             $extension = $attachment->getClientOriginalExtension();
+    //             $random = Str::random(20);
+    //             $path = Storage::putFileAs("public/$year/$month/$day", $attachment, $random . "." . $extension);
+    //             $path = Storage::url($path);
+    //             $files[] = url($path);
+    //         }
+    //     }
+    //     return $files;
+    // }
+    // public function bodyImageUpload($content)
+    // {
+    //     try {
+    //         $dom = new \DomDocument();
+    //         $dom->loadHtml($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    //         $imageFile = $dom->getElementsByTagName('imageFile');
+
+    //         foreach ($imageFile as $item => $image) {
+    //             $data = $image->getAttribute('src');
+    //             list($type, $data) = explode(';', $data);
+    //             list(, $data)      = explode(',', $data);
+    //             $imgeData = base64_decode($data);
+    //             $image_name = "/upload/" . time() . $item . '.png';
+    //             $path = public_path() . $image_name;
+    //             file_put_contents($path, $imgeData);
+
+    //             $image->removeAttribute('src');
+    //             $image->setAttribute('src', $image_name);
+    //         }
+
+    //         return $dom->saveHTML();
+    //     } catch (\Throwable $th) {
+    //         return $content;
+    //     }
+    //     return $content;
+    // }
 
     /**
      * Display the specified Email.

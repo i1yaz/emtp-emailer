@@ -58,4 +58,14 @@ class Contact extends Model
         'email' => 'required|email',
         'phone' => 'required'
     ];
+
+    /**
+     * Get the user's full name.
+     *
+     * @return string
+     */
+    public function getRecipientNameAttribute()
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
 }
