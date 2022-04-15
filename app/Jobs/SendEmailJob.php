@@ -36,30 +36,30 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle()
     {
-        // $activeSmtp = ActiveSmtp::first();
-        // $smtpSetting = SmtpSetting::find(2);
-        // if (isset($smtpSetting->id)) {
+        $activeSmtp = ActiveSmtp::first();
+        $smtpSetting = SmtpSetting::find($activeSmtp->smtp_setting_id);
+        if (isset($smtpSetting->id)) {
 
-        //     $config = array(
+            $config = array(
 
-        //         'driver'     => 'smtp',
+                'driver'     => 'smtp',
 
-        //         'host'       => $smtpSetting->host ?? localhost,
+                'host'       => $smtpSetting->host ?? localhost,
 
-        //         'port'       => $smtpSetting->port ?? 2525,
+                'port'       => $smtpSetting->port ?? 2525,
 
-        //         'from'       => array('address' => $smtpSetting->from_address, 'name' => $smtpSetting->from_name),
+                'from'       => array('address' => $smtpSetting->from_address, 'name' => $smtpSetting->from_name),
 
-        //         'encryption' => $smtpSetting->encryption ?? NULL,
+                'encryption' => $smtpSetting->encryption ?? NULL,
 
-        //         'username'   => $smtpSetting->username ?? NULL,
+                'username'   => $smtpSetting->username ?? NULL,
 
-        //         'password'   => $smtpSetting->password ?? NULL
+                'password'   => $smtpSetting->password ?? NULL
 
-        //     );
+            );
 
-        //     Config::set('mail', $config);
-        // }
+            Config::set('mail', $config);
+        }
 
         $data = $this->data;
         $body = $data['body'];

@@ -22,7 +22,7 @@ class Email extends Model
 
 
     public $table = 'emails';
-    
+
 
 
 
@@ -51,8 +51,9 @@ class Email extends Model
      * @var array
      */
     public static $rules = [
-        
+        // 'from' => ['required'],
+        'to' => ['required'],
+        'subject' => ['required'],
+        // 'body' => ['required'],
     ];
-
-    
 }

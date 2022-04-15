@@ -31,8 +31,6 @@ class SmtpSettingController extends AppBaseController
      */
     public function index(Request $request)
     {
-        // $smtpSettings = $this->smtpSettingRepository->paginate(10);
-        // $smtpSettings = SmtpSetting::with('activeSmtp')->paginate(10);
         $smtpSettings = SmtpSetting::withCount('activeSmtp as activeSmtp_count')->orderBy('activeSmtp_count', 'desc')->paginate(10);
         return view('smtp_settings.index')
             ->with(['smtpSettings' => $smtpSettings]);
