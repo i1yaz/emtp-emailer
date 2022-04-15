@@ -24,7 +24,13 @@ class Contact extends Model
 
     public $table = 'contacts';
 
-
+    public $tags = [
+        "@first_name",
+        "@last_name",
+        "@recipient_name",
+        "@email",
+        "@phone"
+    ];
 
 
     public $fillable = [
@@ -67,5 +73,16 @@ class Contact extends Model
     public function getRecipientNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
+    }
+
+    public function replaceTags()
+    {
+        return [
+            "@first_name" => $this->first_name,
+            "@last_name" => $this->last_name,
+            "@recipient_name" => $this->recipient_name,
+            "@email" => $this->email,
+            "@phone" => $this->phone,
+        ];
     }
 }

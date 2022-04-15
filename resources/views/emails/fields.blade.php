@@ -16,9 +16,29 @@
 </div>
 
 <!-- Body Field -->
-<div class="form-group col-sm-12 col-lg-12">
+<div class="form-group col-sm-12 col-lg-11">
     {!! Form::label('body', 'Body:') !!}
     {!! Form::textarea('body', null, ['class' => 'form-control','id'=>'compose-email']) !!}
+</div>
+
+<!-- Placeholders Field -->
+<div class="form-group col-sm-12 col-lg-1">
+    {!! Form::label('tags', 'Tags:') !!}
+
+    <div  style="display: block" >
+
+        <span style="font-size: small;">
+            <a href="javascript:replaceTag('@first_name')">@first_name</a>
+            <br>
+            <a href="javascript:replaceTag('@last_name')">@last_name</a>
+            <br>
+            <a href="javascript:replaceTag('@recipient_name')">@recipient_name</a>
+            <br>
+            <a href="javascript:replaceTag('@email')">@email</a>
+            <br>
+            <a href="javascript:replaceTag('@phone')">@phone</a>
+        </span>
+    </div>
 </div>
 
 <!-- Attachment Field -->
@@ -35,8 +55,12 @@
             $('#compose-email').summernote({
                 height: 100
             });
-        });
 
+        });
+        function replaceTag(tag) {
+                console.log(tag);
+                $("#compose-email").summernote('insertText', tag)
+            }
         </script>
 
 @endpush

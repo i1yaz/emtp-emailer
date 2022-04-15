@@ -69,13 +69,7 @@ class EmailController extends AppBaseController
         $body = bodyImageUpload($request->body);
         $attachments = attachmentUpload($request);
         foreach ($contacts as  $contact) {
-            $vars = array(
-                "{{{first_name}}}" => $contact->first_name,
-                "{{{last_name}}}" => $contact->last_name,
-                "{{{recipient_name}}}" => $contact->recipient_name,
-                "{{{email}}}" => $contact->email,
-                "{{{phone}}}" => $contact->phone,
-            );
+            $vars = $contact->replaceTags();
             $body = strtr($body, $vars);
             $data['body'] =  $body;
             $data['contact'] =  $contact;

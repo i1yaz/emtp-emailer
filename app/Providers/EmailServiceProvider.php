@@ -30,7 +30,6 @@ class EmailServiceProvider extends ServiceProvider
         $activeSmtp = ActiveSmtp::first();
         $smtpSetting = SmtpSetting::find($activeSmtp->smtp_setting_id);
 
-        Log::info($smtpSetting->id);
         if (isset($smtpSetting->id)) {
 
             $config = array(

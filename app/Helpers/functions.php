@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 if (!function_exists('attachmentUpload')) {
     function attachmentUpload($request)
     {
+
         $files = [];
         if ($request->has('attachments')) {
             //Year in YYYY format.

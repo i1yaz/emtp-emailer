@@ -9,6 +9,10 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Support\Facades\Mail;
+use App\Models\ActiveSmtp;
+use App\Models\SmtpSetting;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Config;
 
 class SendEmailJob implements ShouldQueue
 {
@@ -32,6 +36,31 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle()
     {
+        // $activeSmtp = ActiveSmtp::first();
+        // $smtpSetting = SmtpSetting::find(2);
+        // if (isset($smtpSetting->id)) {
+
+        //     $config = array(
+
+        //         'driver'     => 'smtp',
+
+        //         'host'       => $smtpSetting->host ?? localhost,
+
+        //         'port'       => $smtpSetting->port ?? 2525,
+
+        //         'from'       => array('address' => $smtpSetting->from_address, 'name' => $smtpSetting->from_name),
+
+        //         'encryption' => $smtpSetting->encryption ?? NULL,
+
+        //         'username'   => $smtpSetting->username ?? NULL,
+
+        //         'password'   => $smtpSetting->password ?? NULL
+
+        //     );
+
+        //     Config::set('mail', $config);
+        // }
+
         $data = $this->data;
         $body = $data['body'];
         $contact = $data['contact'];
