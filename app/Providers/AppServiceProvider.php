@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         RateLimiter::for('email', function () {
-            return Limit::perMinute(5)->by(1);
+            return Limit::perMinute(60)->by(1);
         });
     }
 }
