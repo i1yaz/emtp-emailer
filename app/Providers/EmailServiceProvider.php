@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use App\Models\ActiveSmtp;
 use App\Models\SmtpSetting;
-use Illuminate\Support\Facades\Schema;
 
 class EmailServiceProvider extends ServiceProvider
 {
@@ -28,33 +27,30 @@ class EmailServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (Schema::hasTable('active_smtp')) {
-            $activeSmtp = ActiveSmtp::first();
-            if ($activeSmtp) {
-                $smtpSetting = SmtpSetting::find($activeSmtp->smtp_setting_id);
-                if (isset($smtpSetting->id)) {
+        $activeSmtp = ActiveSmtp::first();
+        $smtpSetting = SmtpSetting::find($activeSmtp->smtp_setting_id);
 
-                    $config = array(
+        if (isset($smtpSetting->id)) {
 
-                        'driver'     => 'smtp',
+            $config = array(
 
-                        'host'       => $smtpSetting->host ?? localhost,
+                'driver'     => 'smtp',
 
-                        'port'       => $smtpSetting->port ?? 2525,
+                'host'       => $smtpSetting->host ?? localhost,
 
-                        'from'       => array('address' => $smtpSetting->from_address, 'name' => $smtpSetting->from_name),
+                'port'       => $smtpSetting->port ?? 2525,
 
-                        'encryption' => $smtpSetting->encryption ?? NULL,
+                'from'       => array('address' => $smtpSetting->from_address, 'name' => $smtpSetting->from_name),
 
-                        'username'   => $smtpSetting->username ?? NULL,
+                'encryption' => $smtpSetting->encryption ?? NULL,
 
-                        'password'   => $smtpSetting->password ?? NULL
+                'username'   => $smtpSetting->username ?? NULL,
 
-                    );
+                'password'   => $smtpSetting->password ?? NULL
 
-                    Config::set('mail', $config);
-                }
-            }
+            );
+
+            Config::set('mail', $config);
         }
     }
 }
