@@ -30,29 +30,30 @@ class EmailServiceProvider extends ServiceProvider
     {
         if (Schema::hasTable('active_smtp')) {
             $activeSmtp = ActiveSmtp::first();
-            $smtpSetting = SmtpSetting::find($activeSmtp->smtp_setting_id);
+            if ($activeSmtp) {
+                $smtpSetting = SmtpSetting::find($activeSmtp->smtp_setting_id);
+                if (isset($smtpSetting->id)) {
 
-            if (isset($smtpSetting->id)) {
+                    $config = array(
 
-                $config = array(
+                        'driver'     => 'smtp',
 
-                    'driver'     => 'smtp',
+                        'host'       => $smtpSetting->host ?? localhost,
 
-                    'host'       => $smtpSetting->host ?? localhost,
+                        'port'       => $smtpSetting->port ?? 2525,
 
-                    'port'       => $smtpSetting->port ?? 2525,
+                        'from'       => array('address' => $smtpSetting->from_address, 'name' => $smtpSetting->from_name),
 
-                    'from'       => array('address' => $smtpSetting->from_address, 'name' => $smtpSetting->from_name),
+                        'encryption' => $smtpSetting->encryption ?? NULL,
 
-                    'encryption' => $smtpSetting->encryption ?? NULL,
+                        'username'   => $smtpSetting->username ?? NULL,
 
-                    'username'   => $smtpSetting->username ?? NULL,
+                        'password'   => $smtpSetting->password ?? NULL
 
-                    'password'   => $smtpSetting->password ?? NULL
+                    );
 
-                );
-
-                Config::set('mail', $config);
+                    Config::set('mail', $config);
+                }
             }
         }
     }
