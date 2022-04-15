@@ -25,22 +25,3 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('emails', App\Http\Controllers\EmailController::class);
     Route::resource('contacts', App\Http\Controllers\ContactController::class);
 });
-
-
-
-Route::get('/mkdir', function () {
-    $year = date("Y");
-    $month = date("m");
-    $yearDir = "../" . $year;
-    $yearMonthDir = "../" . $year . "/" . $month;
-    $yearMonthDir = "../" . $year . "/" . $month;
-
-    if (file_exists($yearDir)) {
-        if (file_exists($yearMonthDir) == false) {
-            mkdir($yearMonthDir, 0777);
-        }
-    } else {
-        mkdir($yearMonthDir, 0777);
-    }
-    dd($yearDir, $yearMonthDir);
-});
